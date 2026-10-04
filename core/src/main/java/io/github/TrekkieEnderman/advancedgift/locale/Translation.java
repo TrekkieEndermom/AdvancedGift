@@ -117,10 +117,9 @@ public class Translation {
         }
 
         if (objects == null || objects.length == 0) {
-            final String string = REMOVE_DOUBLE_QUOTE.matcher(instance.getString(locale, key)).replaceAll("'");
-            return ChatFormatUtils.format(string);
+            return REMOVE_DOUBLE_QUOTE.matcher(instance.getString(locale, key)).replaceAll("'");
         }
-        return ChatFormatUtils.format(instance.format(locale, key, objects));
+        return instance.format(locale, key, objects);
     }
 
     public static Locale parseLocale(String string) {

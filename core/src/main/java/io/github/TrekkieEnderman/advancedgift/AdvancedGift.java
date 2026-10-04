@@ -32,7 +32,6 @@ import net.md_5.bungee.api.chat.HoverEvent;
 import org.bstats.bukkit.Metrics;
 import org.bstats.charts.SingleLineChart;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -190,7 +189,7 @@ public class AdvancedGift extends JavaPlugin {
         reloadConfig();
         Translation.updateLocale(getConfigFile().getString("locale"));
         loadWorldGroupList();
-        prefix = ChatColor.translateAlternateColorCodes('&', this.getConfigFile().getString("prefix") + " ");
+        prefix = this.getConfigFile().getString("prefix") + " ";
         getLogger().log(Level.INFO, Message.CONFIG_LOADED.translate());
         return true;
     }

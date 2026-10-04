@@ -19,12 +19,17 @@ package io.github.TrekkieEnderman.advancedgift.util;
 
 import io.github.TrekkieEnderman.advancedgift.ServerVersion;
 import lombok.experimental.UtilityClass;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
+import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 @UtilityClass
 public class ChatFormatUtils {
+    final LegacyComponentSerializer legacyComponentSerializer = LegacyComponentSerializer.legacyAmpersand();
+    final PlainTextComponentSerializer plainTextSerializer = PlainTextComponentSerializer.plainText();
 
     public static final char COLOR_CHAR = '\u00A7';
     private static final Pattern RGB_PATTERN = Pattern.compile("&#([A-Fa-f0-9]{6})");
@@ -66,5 +71,13 @@ public class ChatFormatUtils {
             hexBuilder.append(COLOR_CHAR).append(c);
         }
         return hexBuilder.toString();
+    }
+
+    public static Component fromLegacyText(final String input) {
+        return legacyComponentSerializer.deserialize(input);
+    }
+
+    public static String stripFormatting(final String input) {
+        return plainTextSerializer.serialize(fromLegacyText(input));
     }
 }

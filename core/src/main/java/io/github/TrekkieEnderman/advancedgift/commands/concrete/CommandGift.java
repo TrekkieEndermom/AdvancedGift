@@ -25,9 +25,15 @@ import io.github.TrekkieEnderman.advancedgift.ServerVersion;
 import io.github.TrekkieEnderman.advancedgift.commands.SimpleCommand;
 import io.github.TrekkieEnderman.advancedgift.locale.Message;
 import io.github.TrekkieEnderman.advancedgift.locale.Translation;
+import io.github.TrekkieEnderman.advancedgift.util.ChatFormatUtils;
 import me.Fupery.ArtMap.ArtMap;
 import me.Fupery.ArtMap.Painting.ArtistHandler;
-import net.md_5.bungee.api.chat.*;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.TextComponent;
+import net.kyori.adventure.text.event.ClickEvent;
+import net.kyori.adventure.text.event.HoverEvent;
+import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
+import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import org.apache.commons.lang.WordUtils;
 import org.apache.commons.lang.math.NumberUtils;
 import org.bukkit.Bukkit;
@@ -40,8 +46,6 @@ import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.inventory.meta.BannerMeta;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.metadata.MetadataValue;
-
-import net.md_5.bungee.api.ChatColor;
 
 import com.meowj.langutils.lang.LanguageHelper;
 import org.jetbrains.annotations.NotNull;
@@ -87,26 +91,26 @@ public class CommandGift extends SimpleCommand {
             target = matchList.get(0);
         } else if (matchList.size() > 1) {
             sender.sendMessage(plugin.getPrefix() + Message.MULTIPLE_TARGET_FOUND.translate());
-            final ComponentBuilder builder = new ComponentBuilder("");
+            final TextComponent.Builder builder = Component.text();
 
-            final HoverEvent hoverEvent = new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder(Message.TIP_CLICK_TO_SEND_GIFT.translate()).create());
+            final HoverEvent<Component> hoverEvent = Component.text(Message.TIP_CLICK_TO_SEND_GIFT.translate()).asHoverEvent();
             final String[] argsClone = args.clone(); //we want to reuse the exact command the player used, and just change the target name
+            boolean first = true;
             for (Player player : matchList) {
-                TextComponent textComponent = new TextComponent(TextComponent.fromLegacyText(player.getDisplayName()));
 
                 argsClone[0] = player.getName(); //replace the original 1st argument with new name
                 final String commandString = "/gift " + String.join(" ", argsClone);
-                ClickEvent clickEvent = new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, commandString);
+                Component playerComp = player.displayName()
+                        .hoverEvent(hoverEvent)
+                        .clickEvent(ClickEvent.suggestCommand(commandString));
 
-                if (builder.getCursor() != 0) builder.append(" ", ComponentBuilder.FormatRetention.NONE);
-                if (ServerVersion.getMinorVersion() < 12) {
-                    builder.append(textComponent.toLegacyText());
-                } else {
-                    builder.append(textComponent);
+                if (!first) {
+                    builder.appendSpace();
                 }
-                builder.event(hoverEvent).event(clickEvent);
+                first = false;
+                builder.append(playerComp);
             }
-            sender.spigot().sendMessage(builder.create());
+            sender.sendMessage(builder.build());
             return true;
         }
 
@@ -379,18 +383,14 @@ public class CommandGift extends SimpleCommand {
         final String senderNotification = plugin.getPrefix() + Message.GIFT_SENT.translate(targetName, giftAmount, itemDetails);
         final String targetNotification = plugin.getPrefix() + Message.GIFT_RECEIVED.translate(senderName, giftAmount, itemDetails);
         final String spyNotification = plugin.getPrefix() + Message.GIFT_LOGGED.translate(senderName, targetName, giftAmount, itemDetails);
-        final TextComponent senderComponent = new TextComponent(TextComponent.fromLegacyText(senderNotification));
-        final TextComponent targetComponent = new TextComponent(TextComponent.fromLegacyText(targetNotification));
-        final TextComponent spyComponent = new TextComponent(TextComponent.fromLegacyText(spyNotification));
 
-        plugin.getNms().getAsHoverEvent(itemstack).ifPresent(event -> {
-            senderComponent.setHoverEvent(event);
-            targetComponent.setHoverEvent(event);
-            spyComponent.setHoverEvent(event);
-        });
+        HoverEvent<HoverEvent.ShowItem> hoverEvent = itemstack.asHoverEvent();
+        final Component senderComponent = ChatFormatUtils.fromLegacyText(senderNotification).hoverEvent(hoverEvent);
+        final Component targetComponent = ChatFormatUtils.fromLegacyText(targetNotification).hoverEvent(hoverEvent);
+        final Component spyComponent = ChatFormatUtils.fromLegacyText(spyNotification).hoverEvent(hoverEvent);
 
-        sender.spigot().sendMessage(senderComponent);
-        target.spigot().sendMessage(targetComponent);
+        sender.sendMessage(senderComponent);
+        target.sendMessage(targetComponent);
         if (!message.isEmpty()) {
             sender.sendMessage(Message.MESSAGE_SENT.translate(message));
             target.sendMessage(Message.MESSAGE_RECEIVED.translate(message));
@@ -399,7 +399,7 @@ public class CommandGift extends SimpleCommand {
         for (final Player player : Bukkit.getOnlinePlayers()) {
             if (player == sender || player == target) continue;
             if (plugin.getPlayerDataManager().containsUUID(player.getUniqueId(), "spy", null)) {
-                player.spigot().sendMessage(spyComponent);
+                player.sendMessage(spyComponent);
                 if (!message.isEmpty()) player.sendMessage(Message.MESSAGE_LOGGED.translate(senderName, message));
             }
         }
@@ -423,7 +423,7 @@ public class CommandGift extends SimpleCommand {
 
     @SuppressWarnings("deprecation")
     private void logGiftSent(final String message, final String senderName, final String targetName, final ItemStack itemstack, final String itemDetails) {
-        logMessage(senderName + " gave " + targetName + " " + ChatColor.stripColor(itemDetails) + ".");
+        logMessage(senderName + " gave " + targetName + " " + ChatFormatUtils.stripFormatting(itemDetails) + ".");
         if (itemstack.hasItemMeta()) {
             final ItemMeta itemmeta = itemstack.getItemMeta();
             if (itemmeta.hasEnchants() || itemmeta.hasLore() || (ServerVersion.getMinorVersion() >= 11 && itemmeta.isUnbreakable())) {

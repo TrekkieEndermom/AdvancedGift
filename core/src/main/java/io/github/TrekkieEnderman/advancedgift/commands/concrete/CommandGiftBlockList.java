@@ -18,14 +18,13 @@
 package io.github.TrekkieEnderman.advancedgift.commands.concrete;
 
 import io.github.TrekkieEnderman.advancedgift.AdvancedGift;
-import io.github.TrekkieEnderman.advancedgift.ServerVersion;
 import io.github.TrekkieEnderman.advancedgift.commands.SimpleCommand;
 import io.github.TrekkieEnderman.advancedgift.locale.Message;
-import net.md_5.bungee.api.ChatColor;
-import net.md_5.bungee.api.chat.ClickEvent;
-import net.md_5.bungee.api.chat.ComponentBuilder;
-import net.md_5.bungee.api.chat.HoverEvent;
-import net.md_5.bungee.api.chat.TextComponent;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.TextComponent;
+import net.kyori.adventure.text.event.ClickEvent;
+import net.kyori.adventure.text.event.HoverEvent;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandSender;
@@ -36,8 +35,6 @@ import java.util.Set;
 import java.util.UUID;
 
 public class CommandGiftBlockList extends SimpleCommand {
-    private final static String BLANK_SPACE = " ";
-
     public CommandGiftBlockList(final AdvancedGift plugin) {
         super(plugin, "giftblocklist", null);
     }
@@ -57,28 +54,26 @@ public class CommandGiftBlockList extends SimpleCommand {
             if (blockList == null || blockList.isEmpty()) sender.sendMessage(plugin.getPrefix() + Message.BLOCK_LIST_EMPTY.translate());
             else {
                 sender.sendMessage(plugin.getPrefix() + Message.BLOCK_LIST_SHOW.translate());
-                ComponentBuilder builder = new ComponentBuilder(""); //main builder for showing the list
+                final TextComponent.Builder builder = Component.text(); //main builder for showing the list
 
-                final HoverEvent hoverEvent = new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder(Message.TIP_CLICK_TO_UNBLOCK.translate()).create());
+                final HoverEvent<Component> hoverEvent = Component.text(Message.TIP_CLICK_TO_UNBLOCK.translate()).asHoverEvent();
 
+                boolean first = true;
                 for (final UUID playerUUID : blockList) {
                     OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(playerUUID);
-                    TextComponent textComponent = offlinePlayer.isOnline()
-                            ? new TextComponent(TextComponent.fromLegacyText(offlinePlayer.getPlayer().getDisplayName()))
-                            : new TextComponent(offlinePlayer.getName());
-                    textComponent.setColor(ChatColor.DARK_AQUA);
-                    ClickEvent clickEvent = new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/giftunblock " + offlinePlayer.getName());
+                    ClickEvent<ClickEvent.Payload.Text> clickEvent = ClickEvent.runCommand("/giftunblock " + offlinePlayer.getName());
 
-                    builder.append(BLANK_SPACE);
+                    Component playerComp = offlinePlayer.isOnline()
+                            ? offlinePlayer.getPlayer().displayName()
+                            : Component.text(offlinePlayer.getName());
 
-                    if (ServerVersion.getMinorVersion() < 12) {
-                        builder.append(textComponent.toLegacyText());
-                    } else {
-                        builder.append(textComponent);
+                    if (!first) {
+                        builder.appendSpace();
                     }
-                    builder.event(hoverEvent).event(clickEvent);
+                    first = false;
+                    builder.append(playerComp.color(NamedTextColor.DARK_AQUA).hoverEvent(hoverEvent).clickEvent(clickEvent));
                 }
-                sender.spigot().sendMessage(builder.create());
+                sender.sendMessage(builder.build());
                 sender.sendMessage(Message.BLOCK_LIST_USAGE.translate());
             }
             return true;
