@@ -17,14 +17,14 @@
 
 package io.github.TrekkieEnderman.advancedgift.commands.concrete;
 
-import java.util.UUID;
-
 import io.github.TrekkieEnderman.advancedgift.AdvancedGift;
 import io.github.TrekkieEnderman.advancedgift.commands.SimpleCommand;
 import io.github.TrekkieEnderman.advancedgift.locale.Message;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.UUID;
 
 public class CommandGiftToggle extends SimpleCommand {
     public CommandGiftToggle(AdvancedGift plugin) {

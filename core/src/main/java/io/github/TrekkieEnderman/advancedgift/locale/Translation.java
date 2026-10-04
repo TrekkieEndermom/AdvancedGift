@@ -18,7 +18,6 @@
 package io.github.TrekkieEnderman.advancedgift.locale;
 
 import io.github.TrekkieEnderman.advancedgift.AdvancedGift;
-import io.github.TrekkieEnderman.advancedgift.util.ChatFormatUtils;
 import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;

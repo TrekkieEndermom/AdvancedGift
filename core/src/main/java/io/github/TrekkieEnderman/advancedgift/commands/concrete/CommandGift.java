@@ -17,9 +17,7 @@
 
 package io.github.TrekkieEnderman.advancedgift.commands.concrete;
 
-import java.util.*;
-import java.util.stream.Collectors;
-
+import com.meowj.langutils.lang.LanguageHelper;
 import io.github.TrekkieEnderman.advancedgift.AdvancedGift;
 import io.github.TrekkieEnderman.advancedgift.commands.SimpleCommand;
 import io.github.TrekkieEnderman.advancedgift.locale.Message;
@@ -43,9 +41,10 @@ import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.inventory.meta.BannerMeta;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.metadata.MetadataValue;
-
-import com.meowj.langutils.lang.LanguageHelper;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class CommandGift extends SimpleCommand {
     private final static char[] SPACE_DELIMITER = new char[]{' '};

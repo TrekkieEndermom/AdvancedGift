@@ -18,28 +18,24 @@
 package io.github.TrekkieEnderman.advancedgift;
 
 import io.github.TrekkieEnderman.advancedgift.commands.concrete.*;
-import io.github.TrekkieEnderman.advancedgift.data.LegacyDataManager;
 import io.github.TrekkieEnderman.advancedgift.data.PlayerDataManager;
 import io.github.TrekkieEnderman.advancedgift.data.StandardDataManager;
-import io.github.TrekkieEnderman.advancedgift.locale.Message;
 import io.github.TrekkieEnderman.advancedgift.listener.PlayerJoinListener;
-import io.github.TrekkieEnderman.advancedgift.metrics.GiftCounter;
-import io.github.TrekkieEnderman.advancedgift.nms.NMSInterface;
-import io.github.TrekkieEnderman.advancedgift.nms.Reflect;
+import io.github.TrekkieEnderman.advancedgift.locale.Message;
 import io.github.TrekkieEnderman.advancedgift.locale.Translation;
+import io.github.TrekkieEnderman.advancedgift.metrics.GiftCounter;
 import lombok.Getter;
-import net.md_5.bungee.api.chat.HoverEvent;
 import org.bstats.bukkit.Metrics;
 import org.bstats.charts.SingleLineChart;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.jetbrains.annotations.NotNull;
 
-import java.io.*;
-import java.util.*;
+import java.io.File;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.logging.Level;
 
 public class AdvancedGift extends JavaPlugin {
@@ -143,7 +139,6 @@ public class AdvancedGift extends JavaPlugin {
     }
 
     public int getPlayerWorldGroup(Player player) {
-        //int playerWorldGroup = -1;
         for (int key : worldList.keySet()) {
             ArrayList<String> values = worldList.get(key);
             for (String w : values) {
