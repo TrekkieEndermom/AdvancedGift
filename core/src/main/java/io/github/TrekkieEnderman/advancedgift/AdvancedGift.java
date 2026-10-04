@@ -44,8 +44,6 @@ public class AdvancedGift extends JavaPlugin {
     @Getter
     private String prefix;
     @Getter
-    private String extLib;
-    @Getter
     private boolean textTooltipEnabled;
     private boolean hasArtMap = false;
     @Getter
@@ -61,16 +59,6 @@ public class AdvancedGift extends JavaPlugin {
         getLogger().info("");
 
         textTooltipEnabled = getConfigFile().getBoolean("enable-tooltip", true);
-
-        getLogger().info("Searching for a material library  -----------------");
-        if (Bukkit.getPluginManager().getPlugin("LangUtils") != null) {
-            getLogger().info("Language Utils found. This library will be used.");
-            extLib = "LangUtils";
-        } else {
-            getLogger().info("No supported material library found.");
-            getLogger().info("Spigot's material enum will be used instead. Material names won't be translated.");
-            extLib = "none"; //If you're wondering why this isn't left null instead, I don't know!
-        }
         this.getCommand("gift").setExecutor(new CommandGift(this));
         this.getCommand("togglegift").setExecutor(new CommandGiftToggle(this));
         this.getCommand("giftblock").setExecutor(new CommandGiftBlock(this));

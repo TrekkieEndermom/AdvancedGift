@@ -17,11 +17,9 @@
 
 package io.github.TrekkieEnderman.advancedgift.commands.concrete;
 
-import com.meowj.langutils.lang.LanguageHelper;
 import io.github.TrekkieEnderman.advancedgift.AdvancedGift;
 import io.github.TrekkieEnderman.advancedgift.commands.SimpleCommand;
 import io.github.TrekkieEnderman.advancedgift.locale.Message;
-import io.github.TrekkieEnderman.advancedgift.locale.Translation;
 import io.github.TrekkieEnderman.advancedgift.util.ChatFormatUtils;
 import me.Fupery.ArtMap.ArtMap;
 import me.Fupery.ArtMap.Painting.ArtistHandler;
@@ -347,13 +345,8 @@ public class CommandGift extends SimpleCommand {
     }
 
     private void sendNotification(final Player sender, final Player target, final ItemStack itemstack, final int giftAmount, final String message) {
-        final String material;
-        if (plugin.getExtLib().equals("LangUtils")) {
-            material = LanguageHelper.getItemName(itemstack, Translation.getServerLocale().toString());
-        } else {
-            // TODO need a good and simple way to get a translated material name
-            material = itemstack.getType().toString().replace("_", " ").toLowerCase();
-        }
+        // TODO need a good and simple way to get a translated material name
+        final String material = itemstack.getType().toString().replace("_", " ").toLowerCase();
         String itemDetails = WordUtils.capitalize(material, SPACE_DELIMITER);
 
         final boolean hasItemMeta = itemstack.hasItemMeta();
