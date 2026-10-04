@@ -27,10 +27,10 @@
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>advancedgift-core</artifactId>
-    <version>1.13.1</version>
+    <version>1.14.0</version>
     <build>
         <directory>../target</directory>
-        <finalName>AdvancedGift-${project.version}</finalName>
+        <finalName>AdvancedGift-${project.version}-Paper</finalName>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -74,16 +74,16 @@
 
     <repositories>
         <repository>
-            <id>lang-utils-repo</id>
-            <url>https://raw.github.com/MascusJeoraly/LanguageUtils/mvn-repo/</url>
+            <id>papermc</id>
+            <url>https://repo.papermc.io/repository/maven-public/</url>
         </repository>
     </repositories>
 
     <dependencies>
         <dependency>
-            <groupId>org.spigotmc</groupId>
-            <artifactId>spigot-api</artifactId>
-            <version>1.15.2-R0.1-SNAPSHOT</version>
+            <groupId>io.papermc.paper</groupId>
+            <artifactId>paper-api</artifactId>
+            <version>[26.0.build,)</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
