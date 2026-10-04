@@ -21,7 +21,6 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 import io.github.TrekkieEnderman.advancedgift.AdvancedGift;
-import io.github.TrekkieEnderman.advancedgift.ServerVersion;
 import io.github.TrekkieEnderman.advancedgift.commands.SimpleCommand;
 import io.github.TrekkieEnderman.advancedgift.locale.Message;
 import io.github.TrekkieEnderman.advancedgift.locale.Translation;
@@ -32,8 +31,6 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.event.HoverEvent;
-import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
-import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import org.apache.commons.lang.WordUtils;
 import org.apache.commons.lang.math.NumberUtils;
 import org.bukkit.Bukkit;
@@ -120,8 +117,7 @@ public class CommandGift extends SimpleCommand {
         }
 
         // Get ItemStack
-        @SuppressWarnings("deprecation")
-        final ItemStack giftItem = (ServerVersion.getMinorVersion() < 9 ? senderInventory.getItemInHand() : senderInventory.getItemInMainHand()).clone();
+        final ItemStack giftItem = senderInventory.getItemInMainHand().clone();
         if (giftItem.getType() == Material.AIR) {
             sender.sendMessage(plugin.getPrefix() + Message.GIFT_EMPTY.translate());
             return false;
@@ -183,7 +179,7 @@ public class CommandGift extends SimpleCommand {
 
     private int getTotalAmountHas(final PlayerInventory senderInventory, final ItemStack itemstack) {
         int hasAmount = 0;
-        for (ItemStack item : getStorageContents(senderInventory)) {
+        for (ItemStack item : senderInventory.getStorageContents()) {
             if (itemstack.isSimilar(item)) {
                 hasAmount += item.getAmount();
             }
@@ -268,7 +264,7 @@ public class CommandGift extends SimpleCommand {
         }
         if (targetInventory.firstEmpty() == -1) {
             int space = 0;
-            for (ItemStack item: getStorageContents(targetInventory)) {
+            for (ItemStack item: targetInventory.getStorageContents()) {
                 if (itemstack.isSimilar(item)) {
                     space = item.getMaxStackSize() - item.getAmount();
                     if (space > 0) break;
@@ -384,10 +380,16 @@ public class CommandGift extends SimpleCommand {
         final String targetNotification = plugin.getPrefix() + Message.GIFT_RECEIVED.translate(senderName, giftAmount, itemDetails);
         final String spyNotification = plugin.getPrefix() + Message.GIFT_LOGGED.translate(senderName, targetName, giftAmount, itemDetails);
 
-        HoverEvent<HoverEvent.ShowItem> hoverEvent = itemstack.asHoverEvent();
-        final Component senderComponent = ChatFormatUtils.fromLegacyText(senderNotification).hoverEvent(hoverEvent);
-        final Component targetComponent = ChatFormatUtils.fromLegacyText(targetNotification).hoverEvent(hoverEvent);
-        final Component spyComponent = ChatFormatUtils.fromLegacyText(spyNotification).hoverEvent(hoverEvent);
+        Component senderComponent = ChatFormatUtils.fromLegacyText(senderNotification);
+        Component targetComponent = ChatFormatUtils.fromLegacyText(targetNotification);
+        Component spyComponent = ChatFormatUtils.fromLegacyText(spyNotification);
+
+        if (plugin.isTextTooltipEnabled()) {
+            HoverEvent<HoverEvent.ShowItem> hoverEvent = itemstack.asHoverEvent();
+            senderComponent = senderComponent.hoverEvent(hoverEvent);
+            targetComponent = targetComponent.hoverEvent(hoverEvent);
+            spyComponent = spyComponent.hoverEvent(hoverEvent);
+        }
 
         sender.sendMessage(senderComponent);
         target.sendMessage(targetComponent);
@@ -426,11 +428,9 @@ public class CommandGift extends SimpleCommand {
         logMessage(senderName + " gave " + targetName + " " + ChatFormatUtils.stripFormatting(itemDetails) + ".");
         if (itemstack.hasItemMeta()) {
             final ItemMeta itemmeta = itemstack.getItemMeta();
-            if (itemmeta.hasEnchants() || itemmeta.hasLore() || (ServerVersion.getMinorVersion() >= 11 && itemmeta.isUnbreakable())) {
+            if (itemmeta.hasEnchants() || itemmeta.hasLore() || itemmeta.isUnbreakable()) {
                 logMessage("   More item info on " + senderName + "'s gift:");
-                if (ServerVersion.getMinorVersion() >= 11) {
-                    if (itemmeta.isUnbreakable()) plugin.getLogger().info("   - Unbreakable");
-                }
+                if (itemmeta.isUnbreakable()) plugin.getLogger().info("   - Unbreakable");
                 if (itemmeta.hasLore()) {
                     final ArrayList<String> loreList = new ArrayList<>();
                     for (String lore : itemmeta.getLore()) {
@@ -441,42 +441,7 @@ public class CommandGift extends SimpleCommand {
                 if (itemmeta.hasEnchants()) {
                     final ArrayList<String> enchantmentList= new ArrayList<>();
                     for (Enchantment key : itemstack.getEnchantments().keySet()) {
-                        String name;
-                        if (ServerVersion.getMinorVersion() < 13) {
-                            switch(key.getName()) {
-                                case "ARROW_DAMAGE": name = "POWER"; break;
-                                case "ARROW_FIRE": name = "FLAME"; break;
-                                case "ARROW_INFINITE": name = "INFINITY"; break;
-                                case "ARROW_KNOCKBACK": name = "PUNCH"; break;
-                                case "BINDING_CURSE": name = "CURSE OF BINDING"; break;
-                                case "DAMAGE_ALL": name = "SHARPNESS"; break;
-                                case "DAMAGE_ARTHROPODS": name = "BANE OF ARTHROPODS"; break;
-                                case "DAMAGE_UNDEAD": name = "SMITE"; break;
-                                case "DEPTH_STRIDER": name = "DEPTH STRIDER"; break;
-                                case "DIG_SPEED": name = "EFFICIENCY"; break;
-                                case "DURABILITY": name = "UNBREAKING"; break;
-                                case "FIRE_ASPECT": name = "FIRE ASPECT"; break;
-                                case "FROST_WALKER": name = "FROST WALKER"; break;
-                                case "KNOCKBACK": name = "KNOCKBACK"; break;
-                                case "LOOT_BONUS_BLOCKS": name = "FORTUNE"; break;
-                                case "LOOT_BONUS_MOBS": name = "LOOTING"; break;
-                                case "LUCK": name = "LUCK OF THE SEA"; break;
-                                case "LURE": name = "LURE"; break;
-                                case "MENDING": name = "MENDING"; break;
-                                case "OXYGEN": name = "RESPIRATION"; break;
-                                case "PROTECTION_ENVIRONMENTAL": name = "PROTECTION"; break;
-                                case "PROTECTION_EXPLOSIONS": name = "BLAST PROTECTION"; break;
-                                case "PROTECTION_FALL": name = "FEATHER FALLING"; break;
-                                case "PROTECTION_FIRE": name = "FIRE PROTECTION"; break;
-                                case "PROTECTION_PROJECTILE": name = "PROJECTILE PROTECTION"; break;
-                                case "SILK_TOUCH": name = "SILK TOUCH"; break;
-                                case "SWEEPING_EDGE": name = "SWEEPING EDGE"; break;
-                                case "THORNS": name = "THORNS"; break;
-                                case "VANISHING_CURSE": name = "CURSE OF VANISHING"; break;
-                                case "WATER_WORKER": name = "AQUA AFFINITY"; break;
-                                default: name = "invalid enchantment"; break;
-                            }
-                        } else name = key.getKey().toString().replace("minecraft:", "").toUpperCase();
+                        String name = key.getKey().toString().replace("minecraft:", "").toUpperCase();
                         enchantmentList.add(name + " " + itemstack.getEnchantments().get(key));
                     }
                     logMessage("   - Enchantments: " + String.join(", ", enchantmentList));
@@ -487,9 +452,4 @@ public class CommandGift extends SimpleCommand {
     }
 
     private void logGiftWarning(final String message) {logMessage("Warning: " + message);}
-
-    private ItemStack[] getStorageContents(PlayerInventory inventory) {
-        //getContents also returns offhand and armor slots, which we want to avoid if possible
-        return ServerVersion.getMinorVersion() > 8 ? inventory.getStorageContents() : inventory.getContents();
-    }
 }

@@ -50,55 +50,21 @@ public class AdvancedGift extends JavaPlugin {
     @Getter
     private String extLib;
     @Getter
-    private NMSInterface nms;
-    @Getter
     private boolean textTooltipEnabled;
     private boolean hasArtMap = false;
     @Getter
     private final GiftCounter giftCounter = new GiftCounter();
     @Getter
     private PlayerDataManager playerDataManager;
-    private static final NMSInterface NO_TOOLTIPS = new NMSInterface() {
-        @NotNull
-        @Override
-        public String getAsJsonString(ItemStack item) {
-            return "{}";
-        }
-
-        @NotNull
-        @Override
-        public Optional<HoverEvent> getAsHoverEvent(ItemStack item) {
-            return Optional.empty();
-        }
-    };
 
     @Override
     public void onEnable() {
-        ServerVersion.init();
         getLogger().info("===================================================");
         getLogger().info("Loading files  --------------------");
         loadFiles();
         getLogger().info("");
 
-        getLogger().info("Checking server version  ------------------");
-        if (getConfigFile().getBoolean("enable-tooltip")) {
-            getLogger().info("NMS Version used: " + ServerVersion.getNMSVersion());
-            getLogger().info("");
-            nms = initNMS();
-            if (!nms.equals(NO_TOOLTIPS)) {
-                getLogger().info("This version is supported. Gift notifications will have item tooltip.");
-                textTooltipEnabled = true;
-            } else {
-                getLogger().warning("No NMS support found. Gift notifications will have basic text formatting only.");
-                getLogger().warning("Plugin should still be functional though.");
-                getLogger().warning("Check for updates at www.spigotmc.org/resources/advancedgift.46458/");
-                textTooltipEnabled = false;
-            }
-        } else {
-            getLogger().info("No version-dependent features in use. Skipping this step.");
-            textTooltipEnabled = false;
-        }
-        getLogger().info("");
+        textTooltipEnabled = getConfigFile().getBoolean("enable-tooltip", true);
 
         getLogger().info("Searching for a material library  -----------------");
         if (Bukkit.getPluginManager().getPlugin("LangUtils") != null) {
@@ -123,40 +89,6 @@ public class AdvancedGift extends JavaPlugin {
         Bukkit.getPluginManager().registerEvents(new PlayerJoinListener(this), this);
     }
 
-    private NMSInterface initNMS() {
-        // Likely Paper. Just use reflection in this case.
-        if (ServerVersion.getNMSVersion().equalsIgnoreCase("unknown")) {
-            return getReflection();
-        }
-
-        // Tries to set up a version-dependent NMS provider instead
-        try {
-            final Class<?> classy = Class.forName("io.github.TrekkieEnderman.advancedgift.nms." +
-                    ServerVersion.getNMSVersion().toUpperCase());
-            if (NMSInterface.class.isAssignableFrom(classy)) {
-                return (NMSInterface) classy.getConstructor().newInstance();
-            }
-        } catch (final Exception ignored) {}
-
-        // Attempts to use the reflection class only if the server is 1.21.6 or newer.
-        if ((ServerVersion.getMinorVersion() == 21 && ServerVersion.getRevisionVersion() >= 6)
-                || ServerVersion.getMinorVersion() > 21) {
-            return getReflection();
-        }
-
-        // No valid support available, return an empty interface.
-        return NO_TOOLTIPS;
-    }
-
-    private NMSInterface getReflection() {
-        try {
-            return new Reflect();
-        } catch (Throwable ex) {
-            getLogger().log(Level.WARNING, "Exception occurred while setting up NMS reflection: " + ex.getMessage());
-            return NO_TOOLTIPS;
-        }
-    }
-
     private void loadFiles() {
         if(!getDataFolder().exists()) {
             getDataFolder().mkdirs();
@@ -167,11 +99,7 @@ public class AdvancedGift extends JavaPlugin {
             getLogger().warning(Message.OUTDATED_CONFIG.translate());
         }
 
-        if (ServerVersion.getMinorVersion() > 11) {
-            playerDataManager = new StandardDataManager(this);
-        } else {
-            playerDataManager = new LegacyDataManager(this);
-        }
+        playerDataManager = new StandardDataManager(this);
 
         this.getPlayerDataManager().load();
     }

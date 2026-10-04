@@ -17,7 +17,6 @@
 
 package io.github.TrekkieEnderman.advancedgift.util;
 
-import io.github.TrekkieEnderman.advancedgift.ServerVersion;
 import lombok.experimental.UtilityClass;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
@@ -48,9 +47,6 @@ public class ChatFormatUtils {
         }
         legacyMatcher.appendTail(stringBuilder);
 
-        // If the server version is below 1.16, do not proceed further
-        if (ServerVersion.getMinorVersion() < 16) return stringBuilder.toString();
-
         // Format hex colors next
         final Matcher rgbMatcher = RGB_PATTERN.matcher(stringBuilder.toString());
         stringBuilder = new StringBuffer();
@@ -63,7 +59,6 @@ public class ChatFormatUtils {
     }
 
     public static String parseHexCode(String hex) {
-        if (ServerVersion.getMinorVersion() < 16) return hex;
         if (hex == null || hex.isEmpty()) return hex;
 
         StringBuilder hexBuilder = new StringBuilder(COLOR_CHAR + "x");
