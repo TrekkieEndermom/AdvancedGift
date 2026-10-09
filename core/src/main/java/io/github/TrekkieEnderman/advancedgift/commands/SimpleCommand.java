@@ -32,7 +32,8 @@ import org.jetbrains.annotations.NotNull;
 @AllArgsConstructor
 public abstract class SimpleCommand implements CommandExecutor {
     protected final AdvancedGift plugin;
-    protected final String name;
+    @Getter
+    private final String name;
     @Getter
     private final String permission;
 

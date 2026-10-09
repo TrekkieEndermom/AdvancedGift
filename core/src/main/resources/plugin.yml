@@ -6,39 +6,6 @@ website: https://www.spigotmc.org/resources/advancedgift-1-8-8.46458/
 softdepend: [LangUtils, ArtMap]
 api-version: 1.21.11
 
-commands:
-  gift:
-    description: "Send your friend or foe a gift, anywhere and anytime, in an instant!"
-    usage: "/<command> <player> <amount|hand|all> <message>"
-    aliases: [sendgift, giftsend]
-  togglegift:
-    description: "Enable or disable your ability to receive gifts from everyone."
-    usage: "/<command> <on|off>"
-    aliases: [gifttoggle, tg, gt]
-  agreload:
-    description: "Reload the AdvancedGift config."
-    usage: "/<command>"
-    aliases: [agr]
-  giftspy:
-    description: "Spy on the gift exchanges to catch the offensive ones."
-    usage: "/<command> <on|off>"
-    aliases: [gspy]
-  giftblock:
-    description: "Block gifts from a player you dislike or find annoying!"
-    usage: "/<command> [player]"
-    aliases: [blockgift, gblock]
-  giftunblock:
-    description: "Unblock a player, allowing them to send you gifts again."
-    usage: "/<command> [player]"
-    aliases: [unblockgift, gunblock, ungblock]
-  giftblocklist:
-    description: "Lists the players you've blocked gifts from, or clear the list."
-    usage: "/<command> <clear>"
-    aliases: [gblocklist, gblist]
-  agtranslate:
-    description: "Creates a customizable translation file for the target locale. If no locale is inputted, the locale set in the config would be used instead. Will accept just about any locale, even fake ones (check out sas_SY)."
-    usage: "/<command> <locale>"
-
 permissions:
   advancedgift.gift.send:
     description: Allows sending gifts

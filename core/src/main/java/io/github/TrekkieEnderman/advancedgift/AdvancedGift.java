@@ -17,6 +17,7 @@
 
 package io.github.TrekkieEnderman.advancedgift;
 
+import io.github.TrekkieEnderman.advancedgift.commands.CommandManager;
 import io.github.TrekkieEnderman.advancedgift.commands.concrete.*;
 import io.github.TrekkieEnderman.advancedgift.data.PlayerDataManager;
 import io.github.TrekkieEnderman.advancedgift.data.StandardDataManager;
@@ -55,6 +56,7 @@ public class AdvancedGift extends JavaPlugin {
     private final GiftCounter giftCounter = new GiftCounter();
     @Getter
     private PlayerDataManager playerDataManager;
+    private final CommandManager commandManager = new CommandManager(this);
 
     @Override
     public void onEnable() {
@@ -64,14 +66,15 @@ public class AdvancedGift extends JavaPlugin {
         getLogger().info("");
 
         textTooltipEnabled = getConfigFile().getBoolean("enable-tooltip", true);
-        this.getCommand("gift").setExecutor(new CommandGift(this));
-        this.getCommand("togglegift").setExecutor(new CommandGiftToggle(this));
-        this.getCommand("giftblock").setExecutor(new CommandGiftBlock(this));
-        this.getCommand("giftunblock").setExecutor(new CommandGiftUnblock(this));
-        this.getCommand("giftblocklist").setExecutor(new CommandGiftBlockList(this));
-        this.getCommand("agreload").setExecutor(new CommandReload(this));
-        this.getCommand("giftspy").setExecutor(new CommandSpy(this));
-        this.getCommand("agtranslate").setExecutor(new CommandTranslate(this));
+        commandManager.addCommand(new CommandGift(this), "sendgift", "giftsend");
+        commandManager.addCommand(new CommandGiftToggle(this), "togglegift", "tg", "gt");
+        commandManager.addCommand(new CommandGiftBlock(this), "blockgift", "gblock");
+        commandManager.addCommand(new CommandGiftUnblock(this), "unblockgift", "gunblock", "ungblock");
+        commandManager.addCommand(new CommandGiftBlockList(this), "gblocklist", "gblist");
+        commandManager.addCommand(new CommandReload(this), "agr");
+        commandManager.addCommand(new CommandSpy(this), "gspy");
+        commandManager.addCommand(new CommandTranslate(this));
+        commandManager.registerAll();
         getLogger().info("===================================================");
         if (Bukkit.getPluginManager().getPlugin("ArtMap") != null) hasArtMap = true;
         startMetrics();
@@ -119,6 +122,7 @@ public class AdvancedGift extends JavaPlugin {
     @Override
     public void onDisable() {
         this.getPlayerDataManager().save();
+        this.commandManager.shutdown();
     }
 
     private void loadWorldGroupList() {
