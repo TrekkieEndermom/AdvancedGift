@@ -61,7 +61,7 @@ public class CommandGiftBlockList extends SimpleCommand {
                 boolean first = true;
                 for (final UUID playerUUID : blockList) {
                     OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(playerUUID);
-                    ClickEvent<ClickEvent.Payload.Text> clickEvent = ClickEvent.runCommand("/giftunblock " + offlinePlayer.getName());
+                    ClickEvent clickEvent = ClickEvent.runCommand("/giftunblock " + offlinePlayer.getName());
 
                     Component playerComp = offlinePlayer.isOnline()
                             ? offlinePlayer.getPlayer().displayName()
