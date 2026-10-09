@@ -20,6 +20,7 @@ package io.github.TrekkieEnderman.advancedgift.commands.concrete;
 import io.github.TrekkieEnderman.advancedgift.AdvancedGift;
 import io.github.TrekkieEnderman.advancedgift.commands.SimpleCommand;
 import io.github.TrekkieEnderman.advancedgift.locale.Message;
+import io.github.TrekkieEnderman.advancedgift.util.ChatFormatUtils;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
@@ -31,17 +32,19 @@ public class CommandReload extends SimpleCommand {
 
     @Override
     public void showUsage(CommandSender sender) {
-        sender.sendMessage(plugin.getPrefix() + Message.COMMAND_RELOAD_DESCRIPTION.translate());
-        sender.sendMessage(Message.COMMAND_RELOAD_USAGE.translate());
+        sender.sendMessage(ChatFormatUtils.fromLegacyText(plugin.getPrefix() + Message.COMMAND_RELOAD_DESCRIPTION.translate()));
+        sender.sendMessage(ChatFormatUtils.fromLegacyText(Message.COMMAND_RELOAD_USAGE.translate()));
     }
 
     @Override
     public boolean run(@NotNull final CommandSender sender, @NotNull final String label,  @NotNull final String[] args) {
         if (plugin.loadConfigFile()) {
-            sender.sendMessage(plugin.getPrefix() + Message.CONFIG_RELOADED.translate());
+            sender.sendMessage(ChatFormatUtils.fromLegacyText(plugin.getPrefix() + Message.CONFIG_RELOADED.translate()));
         } else {
-            sender.sendMessage(plugin.getPrefix() + Message.CONFIG_NOT_RELOADED.translate());
-            if (sender instanceof Player) sender.sendMessage(plugin.getPrefix() + Message.CHECK_CONSOLE.translate());
+            sender.sendMessage(ChatFormatUtils.fromLegacyText(plugin.getPrefix() + Message.CONFIG_NOT_RELOADED.translate()));
+            if (sender instanceof Player) {
+                sender.sendMessage(ChatFormatUtils.fromLegacyText(plugin.getPrefix() + Message.CHECK_CONSOLE.translate()));
+            }
         }
         return true;
     }

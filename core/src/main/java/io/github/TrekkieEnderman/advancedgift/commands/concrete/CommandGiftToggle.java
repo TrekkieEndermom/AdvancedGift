@@ -20,6 +20,7 @@ package io.github.TrekkieEnderman.advancedgift.commands.concrete;
 import io.github.TrekkieEnderman.advancedgift.AdvancedGift;
 import io.github.TrekkieEnderman.advancedgift.commands.SimpleCommand;
 import io.github.TrekkieEnderman.advancedgift.locale.Message;
+import io.github.TrekkieEnderman.advancedgift.util.ChatFormatUtils;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
@@ -33,8 +34,8 @@ public class CommandGiftToggle extends SimpleCommand {
 
     @Override
     public void showUsage(CommandSender sender) {
-        sender.sendMessage(plugin.getPrefix() + Message.COMMAND_TOGGLE_DESCRIPTION.translate());
-        sender.sendMessage(Message.COMMAND_TOGGLE_USAGE.translate());
+        sender.sendMessage(ChatFormatUtils.fromLegacyText(plugin.getPrefix() + Message.COMMAND_TOGGLE_DESCRIPTION.translate()));
+        sender.sendMessage(ChatFormatUtils.fromLegacyText(Message.COMMAND_TOGGLE_USAGE.translate()));
     }
 
     @Override
@@ -43,28 +44,28 @@ public class CommandGiftToggle extends SimpleCommand {
         if (args.length == 0) {
             if (!plugin.getPlayerDataManager().containsUUID(senderUUID, "tg", null)) {
                 plugin.getPlayerDataManager().addUUID(senderUUID, "tg", null);
-                sender.sendMessage(plugin.getPrefix() + Message.TOGGLED_OFF.translate());
+                sender.sendMessage(ChatFormatUtils.fromLegacyText(plugin.getPrefix() + Message.TOGGLED_OFF.translate()));
             } else {
                 plugin.getPlayerDataManager().removeUUID(senderUUID, "tg", null);
-                sender.sendMessage(plugin.getPrefix() + Message.TOGGLED_ON.translate());
+                sender.sendMessage(ChatFormatUtils.fromLegacyText(plugin.getPrefix() + Message.TOGGLED_ON.translate()));
             }
         } else {
             if (args[0].equalsIgnoreCase("off") || args[0].equalsIgnoreCase("disable")) {
                 if (!plugin.getPlayerDataManager().containsUUID(senderUUID, "tg", null)) {
                     plugin.getPlayerDataManager().addUUID(senderUUID, "tg", null);
-                    sender.sendMessage(plugin.getPrefix() + Message.TOGGLED_OFF.translate());
+                    sender.sendMessage(ChatFormatUtils.fromLegacyText(plugin.getPrefix() + Message.TOGGLED_OFF.translate()));
                 } else {
-                    sender.sendMessage(plugin.getPrefix() + Message.ALREADY_TOGGLED_OFF.translate());
+                    sender.sendMessage(ChatFormatUtils.fromLegacyText(plugin.getPrefix() + Message.ALREADY_TOGGLED_OFF.translate()));
                 }
             } else if (args[0].equalsIgnoreCase("on") || args [0].equalsIgnoreCase("enable")) {
                 if (plugin.getPlayerDataManager().containsUUID(senderUUID, "tg", null)) {
                     plugin.getPlayerDataManager().removeUUID(senderUUID, "tg", null);
-                    sender.sendMessage(plugin.getPrefix() + Message.TOGGLED_ON.translate());
+                    sender.sendMessage(ChatFormatUtils.fromLegacyText(plugin.getPrefix() + Message.TOGGLED_ON.translate()));
                 } else {
-                    sender.sendMessage(plugin.getPrefix() + Message.ALREADY_TOGGLED_ON.translate());
+                    sender.sendMessage(ChatFormatUtils.fromLegacyText(plugin.getPrefix() + Message.ALREADY_TOGGLED_ON.translate()));
                 }
             } else {
-                sender.sendMessage(plugin.getPrefix() + Message.ARGUMENT_NOT_RECOGNIZED.translate(args[0]));
+                sender.sendMessage(ChatFormatUtils.fromLegacyText(plugin.getPrefix() + Message.ARGUMENT_NOT_RECOGNIZED.translate(args[0])));
                 return false;
             }
         }

@@ -20,6 +20,7 @@ package io.github.TrekkieEnderman.advancedgift.commands.concrete;
 import io.github.TrekkieEnderman.advancedgift.AdvancedGift;
 import io.github.TrekkieEnderman.advancedgift.commands.SimpleCommand;
 import io.github.TrekkieEnderman.advancedgift.locale.Message;
+import io.github.TrekkieEnderman.advancedgift.util.ChatFormatUtils;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.event.ClickEvent;
@@ -41,8 +42,8 @@ public class CommandGiftBlockList extends SimpleCommand {
 
     @Override
     protected void showUsage(CommandSender sender) {
-        sender.sendMessage(plugin.getPrefix() + Message.BLOCK_LIST_DESCRIPTION.translate());
-        sender.sendMessage(Message.BLOCK_LIST_USAGE.translate());
+        sender.sendMessage(ChatFormatUtils.fromLegacyText(plugin.getPrefix() + Message.BLOCK_LIST_DESCRIPTION.translate()));
+        sender.sendMessage(ChatFormatUtils.fromLegacyText(Message.BLOCK_LIST_USAGE.translate()));
     }
 
     @Override
@@ -51,12 +52,13 @@ public class CommandGiftBlockList extends SimpleCommand {
 
         if (args.length == 0) {
             final Set<UUID> blockList = plugin.getPlayerDataManager().getBlockList(senderUUID);
-            if (blockList == null || blockList.isEmpty()) sender.sendMessage(plugin.getPrefix() + Message.BLOCK_LIST_EMPTY.translate());
-            else {
-                sender.sendMessage(plugin.getPrefix() + Message.BLOCK_LIST_SHOW.translate());
+            if (blockList == null || blockList.isEmpty()) {
+                sender.sendMessage(ChatFormatUtils.fromLegacyText(plugin.getPrefix() + Message.BLOCK_LIST_EMPTY.translate()));
+            } else {
+                sender.sendMessage(ChatFormatUtils.fromLegacyText(plugin.getPrefix() + Message.BLOCK_LIST_SHOW.translate()));
                 final TextComponent.Builder builder = Component.text(); //main builder for showing the list
 
-                final HoverEvent<Component> hoverEvent = Component.text(Message.TIP_CLICK_TO_UNBLOCK.translate()).asHoverEvent();
+                final HoverEvent<Component> hoverEvent = ChatFormatUtils.fromLegacyText(Message.TIP_CLICK_TO_UNBLOCK.translate()).asHoverEvent();
 
                 boolean first = true;
                 for (final UUID playerUUID : blockList) {
@@ -74,18 +76,22 @@ public class CommandGiftBlockList extends SimpleCommand {
                     builder.append(playerComp.color(NamedTextColor.DARK_AQUA).hoverEvent(hoverEvent).clickEvent(clickEvent));
                 }
                 sender.sendMessage(builder.build());
-                sender.sendMessage(Message.BLOCK_LIST_USAGE.translate());
+                sender.sendMessage(ChatFormatUtils.fromLegacyText(Message.BLOCK_LIST_USAGE.translate()));
             }
             return true;
         }
 
         if (args[0].equalsIgnoreCase("clear")) {
-            if (plugin.getPlayerDataManager().clearBlockList(senderUUID)) sender.sendMessage(plugin.getPrefix() + Message.BLOCK_LIST_CLEARED.translate());
-            else sender.sendMessage(plugin.getPrefix() + Message.BLOCK_LIST_ALREADY_CLEARED.translate());
+            if (plugin.getPlayerDataManager().clearBlockList(senderUUID)) {
+                sender.sendMessage(ChatFormatUtils.fromLegacyText(plugin.getPrefix() + Message.BLOCK_LIST_CLEARED.translate()));
+            }
+            else {
+                sender.sendMessage(ChatFormatUtils.fromLegacyText(plugin.getPrefix() + Message.BLOCK_LIST_ALREADY_CLEARED.translate()));
+            }
             return true;
         }
 
-        sender.sendMessage(plugin.getPrefix() + Message.ARGUMENT_NOT_RECOGNIZED.translate(args[0]));
+        sender.sendMessage(ChatFormatUtils.fromLegacyText(plugin.getPrefix() + Message.ARGUMENT_NOT_RECOGNIZED.translate(args[0])));
         return false;
     }
 }

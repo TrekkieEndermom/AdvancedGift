@@ -21,6 +21,7 @@ import io.github.TrekkieEnderman.advancedgift.AdvancedGift;
 import io.github.TrekkieEnderman.advancedgift.commands.SimpleCommand;
 import io.github.TrekkieEnderman.advancedgift.locale.Message;
 import io.github.TrekkieEnderman.advancedgift.locale.Translation;
+import io.github.TrekkieEnderman.advancedgift.util.ChatFormatUtils;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
@@ -40,8 +41,8 @@ public class CommandTranslate extends SimpleCommand {
 
     @Override
     public void showUsage(CommandSender sender) {
-        sender.sendMessage(plugin.getPrefix() + Message.COMMAND_TRANSLATE_DESCRIPTION.translate());
-        sender.sendMessage(Message.COMMAND_TRANSLATE_USAGE.translate());
+        sender.sendMessage(ChatFormatUtils.fromLegacyText(plugin.getPrefix() + Message.COMMAND_TRANSLATE_DESCRIPTION.translate()));
+        sender.sendMessage(ChatFormatUtils.fromLegacyText(Message.COMMAND_TRANSLATE_USAGE.translate()));
     }
 
     @Override
@@ -62,15 +63,17 @@ public class CommandTranslate extends SimpleCommand {
         }
 
         if (targetLocale == null) {
-            sender.sendMessage(plugin.getPrefix() + Message.UNKNOWN_LOCALE.translate(args[0]));
+            sender.sendMessage(ChatFormatUtils.fromLegacyText(plugin.getPrefix() + Message.UNKNOWN_LOCALE.translate(args[0])));
             return false;
         }
 
         if (Translation.exportTranslation(targetLocale)) {
-            sender.sendMessage(plugin.getPrefix() + Message.TRANSLATION_CREATED.translate(targetLocale, translationsDirectory));
+            sender.sendMessage(ChatFormatUtils.fromLegacyText(plugin.getPrefix() + Message.TRANSLATION_CREATED.translate(targetLocale, translationsDirectory)));
         } else {
-            sender.sendMessage(plugin.getPrefix() + Message.TRANSLATION_NOT_CREATED.translate(targetLocale, translationsDirectory));
-            if (sender instanceof Player) sender.sendMessage(plugin.getPrefix() + Message.CHECK_CONSOLE.translate());
+            sender.sendMessage(ChatFormatUtils.fromLegacyText(plugin.getPrefix() + Message.TRANSLATION_NOT_CREATED.translate(targetLocale, translationsDirectory)));
+            if (sender instanceof Player) {
+                sender.sendMessage(ChatFormatUtils.fromLegacyText(plugin.getPrefix() + Message.CHECK_CONSOLE.translate()));
+            }
         }
         return true;
     }

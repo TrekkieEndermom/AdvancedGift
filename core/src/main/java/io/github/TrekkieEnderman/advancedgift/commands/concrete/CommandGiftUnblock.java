@@ -20,6 +20,7 @@ package io.github.TrekkieEnderman.advancedgift.commands.concrete;
 import io.github.TrekkieEnderman.advancedgift.AdvancedGift;
 import io.github.TrekkieEnderman.advancedgift.commands.SimpleCommand;
 import io.github.TrekkieEnderman.advancedgift.locale.Message;
+import io.github.TrekkieEnderman.advancedgift.util.ChatFormatUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandSender;
@@ -35,8 +36,8 @@ public class CommandGiftUnblock extends SimpleCommand {
 
     @Override
     public void showUsage(CommandSender sender) {
-        sender.sendMessage(plugin.getPrefix() + Message.COMMAND_UNBLOCK_DESCRIPTION.translate());
-        sender.sendMessage(Message.COMMAND_UNBLOCK_USAGE.translate());
+        sender.sendMessage(ChatFormatUtils.fromLegacyText(plugin.getPrefix() + Message.COMMAND_UNBLOCK_DESCRIPTION.translate()));
+        sender.sendMessage(ChatFormatUtils.fromLegacyText(Message.COMMAND_UNBLOCK_USAGE.translate()));
     }
 
     @SuppressWarnings("deprecation")
@@ -52,9 +53,9 @@ public class CommandGiftUnblock extends SimpleCommand {
 
         if (plugin.getPlayerDataManager().containsUUID(senderUUID, "block", target.getUniqueId())) {
             plugin.getPlayerDataManager().removeUUID(senderUUID, "block", target.getUniqueId());
-            sender.sendMessage(plugin.getPrefix() + Message.UNBLOCK_OTHER.translate(target.getName()));
+            sender.sendMessage(ChatFormatUtils.fromLegacyText(plugin.getPrefix() + Message.UNBLOCK_OTHER.translate(target.getName())));
         } else {
-            sender.sendMessage(plugin.getPrefix() + Message.OTHER_UNBLOCKED_ALREADY.translate(target.getName()));
+            sender.sendMessage(ChatFormatUtils.fromLegacyText(plugin.getPrefix() + Message.OTHER_UNBLOCKED_ALREADY.translate(target.getName())));
         }
         return true;
     }

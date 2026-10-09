@@ -19,6 +19,7 @@ package io.github.TrekkieEnderman.advancedgift.commands;
 
 import io.github.TrekkieEnderman.advancedgift.AdvancedGift;
 import io.github.TrekkieEnderman.advancedgift.locale.Message;
+import io.github.TrekkieEnderman.advancedgift.util.ChatFormatUtils;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.bukkit.command.Command;
@@ -48,7 +49,7 @@ public abstract class SimpleCommand implements CommandExecutor {
     }
 
     protected boolean run(@NotNull final ConsoleCommandSender sender, @NotNull final String commandLabel, @NotNull final String[] args) {
-        sender.sendMessage(Message.COMMAND_FOR_PLAYER_ONLY.translate());
+        sender.sendMessage(ChatFormatUtils.fromLegacyText(Message.COMMAND_FOR_PLAYER_ONLY.translate()));
         return true;
     }
 
@@ -63,7 +64,7 @@ public abstract class SimpleCommand implements CommandExecutor {
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
         if (!isAuthorized(sender)) {
-            sender.sendMessage(Message.COMMAND_NO_PERMISSION.translate());
+            sender.sendMessage(ChatFormatUtils.fromLegacyText(Message.COMMAND_NO_PERMISSION.translate()));
             return true;
         }
 
@@ -78,7 +79,7 @@ public abstract class SimpleCommand implements CommandExecutor {
         }
 
         if (!run(sender, label, args)) {
-            sender.sendMessage(Message.COMMAND_USAGE_TIP.translate(name));
+            sender.sendMessage(ChatFormatUtils.fromLegacyText(Message.COMMAND_USAGE_TIP.translate(name)));
         }
         return true;
     }

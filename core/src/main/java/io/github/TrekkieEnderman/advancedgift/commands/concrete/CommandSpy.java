@@ -20,6 +20,7 @@ package io.github.TrekkieEnderman.advancedgift.commands.concrete;
 import io.github.TrekkieEnderman.advancedgift.AdvancedGift;
 import io.github.TrekkieEnderman.advancedgift.commands.SimpleCommand;
 import io.github.TrekkieEnderman.advancedgift.locale.Message;
+import io.github.TrekkieEnderman.advancedgift.util.ChatFormatUtils;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
@@ -33,8 +34,8 @@ public class CommandSpy extends SimpleCommand {
 
     @Override
     public void showUsage(CommandSender sender) {
-        sender.sendMessage(plugin.getPrefix() + Message.COMMAND_SPY_DESCRIPTION.translate());
-        sender.sendMessage(Message.COMMAND_SPY_USAGE.translate());
+        sender.sendMessage(ChatFormatUtils.fromLegacyText(plugin.getPrefix() + Message.COMMAND_SPY_DESCRIPTION.translate()));
+        sender.sendMessage(ChatFormatUtils.fromLegacyText(Message.COMMAND_SPY_USAGE.translate()));
     }
 
     @Override
@@ -45,9 +46,9 @@ public class CommandSpy extends SimpleCommand {
             final boolean spy = !plugin.getPlayerDataManager().containsUUID(uuid, "spy", null);
             setSpy(uuid, spy);
             if (spy) {
-                sender.sendMessage(plugin.getPrefix() + Message.SPY_ENABLED.translate());
+                sender.sendMessage(ChatFormatUtils.fromLegacyText(plugin.getPrefix() + Message.SPY_ENABLED.translate()));
             } else {
-                sender.sendMessage(plugin.getPrefix() + Message.SPY_DISABLED.translate());
+                sender.sendMessage(ChatFormatUtils.fromLegacyText(plugin.getPrefix() + Message.SPY_DISABLED.translate()));
             }
             return true;
         }
@@ -55,22 +56,22 @@ public class CommandSpy extends SimpleCommand {
         final String arg = args[0];
         if (arg.equalsIgnoreCase("true") || arg.equalsIgnoreCase("on") || arg.equalsIgnoreCase("enable")) {
             if (setSpy(uuid, true)) {
-                sender.sendMessage(plugin.getPrefix() + Message.SPY_ENABLED.translate());
+                sender.sendMessage(ChatFormatUtils.fromLegacyText(plugin.getPrefix() + Message.SPY_ENABLED.translate()));
             } else {
-                sender.sendMessage(plugin.getPrefix() + Message.SPY_ALREADY_ENABLED.translate());
+                sender.sendMessage(ChatFormatUtils.fromLegacyText(plugin.getPrefix() + Message.SPY_ALREADY_ENABLED.translate()));
             }
             return true;
         }
         if (arg.equalsIgnoreCase("false") || arg.equalsIgnoreCase("off") || arg.equalsIgnoreCase("disable")) {
             if (setSpy(uuid, false)) {
-                sender.sendMessage(plugin.getPrefix() + Message.SPY_DISABLED.translate());
+                sender.sendMessage(ChatFormatUtils.fromLegacyText(plugin.getPrefix() + Message.SPY_DISABLED.translate()));
             } else {
-                sender.sendMessage(plugin.getPrefix() + Message.SPY_ALREADY_DISABLED.translate());
+                sender.sendMessage(ChatFormatUtils.fromLegacyText(plugin.getPrefix() + Message.SPY_ALREADY_DISABLED.translate()));
             }
             return true;
         }
 
-        sender.sendMessage(plugin.getPrefix() + Message.ARGUMENT_NOT_RECOGNIZED.translate(args[0]));
+        sender.sendMessage(ChatFormatUtils.fromLegacyText(plugin.getPrefix() + Message.ARGUMENT_NOT_RECOGNIZED.translate(args[0])));
         return false;
     }
 

@@ -24,7 +24,10 @@ import io.github.TrekkieEnderman.advancedgift.listener.PlayerJoinListener;
 import io.github.TrekkieEnderman.advancedgift.locale.Message;
 import io.github.TrekkieEnderman.advancedgift.locale.Translation;
 import io.github.TrekkieEnderman.advancedgift.metrics.GiftCounter;
+import io.github.TrekkieEnderman.advancedgift.util.ChatFormatUtils;
 import lombok.Getter;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bstats.bukkit.Metrics;
 import org.bstats.charts.SingleLineChart;
 import org.bukkit.Bukkit;
@@ -43,6 +46,8 @@ public class AdvancedGift extends JavaPlugin {
     private final HashMap<Integer, ArrayList<String>> worldList = new HashMap<>();
     @Getter
     private String prefix;
+    @Getter
+    private Component prefixComp = Component.text("[AdvancedGift]").color(NamedTextColor.GOLD);
     @Getter
     private boolean textTooltipEnabled;
     private boolean hasArtMap = false;
@@ -80,7 +85,7 @@ public class AdvancedGift extends JavaPlugin {
         Translation.init(this);
         loadConfigFile();
         if (isConfigOutdated()) {
-            getLogger().warning(Message.OUTDATED_CONFIG.translate());
+            getLogger().warning(ChatFormatUtils.stripFormatting(Message.OUTDATED_CONFIG.translate()));
         }
 
         playerDataManager = new StandardDataManager(this);
@@ -95,14 +100,15 @@ public class AdvancedGift extends JavaPlugin {
     public boolean loadConfigFile() {
         // Moved config creation to here so the plugin doesn't run into issues when reloading it on command later
         if (!configFile.exists()) {
-            getLogger().info(Message.CONFIG_NOT_FOUND.translate());
+            getLogger().info(ChatFormatUtils.stripFormatting(Message.CONFIG_NOT_FOUND.translate()));
             saveDefaultConfig();
         }
         reloadConfig();
         Translation.updateLocale(getConfigFile().getString("locale"));
         loadWorldGroupList();
         prefix = this.getConfigFile().getString("prefix") + " ";
-        getLogger().log(Level.INFO, Message.CONFIG_LOADED.translate());
+        prefixComp = ChatFormatUtils.fromLegacyText(prefix);
+        getLogger().log(Level.INFO, ChatFormatUtils.stripFormatting(Message.CONFIG_LOADED.translate()));
         return true;
     }
 
