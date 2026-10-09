@@ -4,7 +4,7 @@ version: ${project.version}
 author: "TrekkieEndermom (Old name: TrekkieEnderman)"
 website: https://www.spigotmc.org/resources/advancedgift-1-8-8.46458/
 softdepend: [LangUtils, ArtMap]
-api-version: 1.13
+api-version: 1.21.11
 
 commands:
   gift:
