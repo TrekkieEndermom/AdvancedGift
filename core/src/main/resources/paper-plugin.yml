@@ -3,3 +3,10 @@ version: ${project.version}
 main: io.github.TrekkieEnderman.advancedgift.AdvancedGift
 api-version: '1.21.11'
 loader: io.github.TrekkieEnderman.advancedgift.AdvancedGiftLoader
+
+dependencies:
+  server:
+    ArtMap:
+      load: AFTER
+      required: false
+      join-classpath: true
